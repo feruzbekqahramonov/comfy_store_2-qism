@@ -1,9 +1,6 @@
 import { useContext } from 'react';
 import { ThemeContext } from '../App';
 
-// ${
-//   theme.theme == 'dark' ? 'text-white' : 'text-black'
-// }
 function About() {
   const theme = useContext(ThemeContext);
   return (

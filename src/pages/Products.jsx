@@ -3,35 +3,50 @@ import Card from "../components/Card";
 
 function Products() {
   const [featured, setFeatured] = useState([]);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
     fetch("https://strapi-store-server.onrender.com/api/products", {
       method: "GET",
     })
-      .then(res => res.json())
-      .then(data => {setFeatured(data.data)})
-      .catch(err => {
+      .then((res) => res.json())
+      .then((data) => {
+        setFeatured(data.data);
+      })
+      .catch((err) => {
         console.log(err);
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+        setLoading(false);
+      });
+  }, []);
 
-  const searchRef = useRef()
-
-  function hanldecl (e) {
+  const searchRef = useRef();
+  const [cotegory, setCategory] = useState();
+  function hanldeClick(e) {
     e.preventDefault();
-    let name = searchRef.current.value
+    let name = searchRef.current.value;
 
-      fetch(`https://strapi-store-server.onrender.com/api/products?search=${name}`)
-      .then(res => res.json())
-      .then(data => {
-        setFeatured(data.data)
+    fetch(
+      `https://strapi-store-server.onrender.com/api/products?search=${name}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setFeatured(data.data);
+      });
+
+    fetch(
+      `https://strapi-store-server.onrender.com/api/products?search=&category=${cotegory}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setFeatured(data.data);
       })
+      .catch((err) => {
+        console.log(err);
+      });
 
-    
+
   }
   return (
     <div className="w-4/5 mx-auto mt-20">
@@ -50,28 +65,34 @@ function Products() {
           </div>
           <div className="field flex flex-col gap-1 w-1/4">
             <label className="cursor-pointer">Select Category</label>
-            <select className="select select-bordered w-full max-w-xs select-sm">
+            <select
+              className="select select-bordered w-full max-w-xs select-sm"
+              value={cotegory}
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+            >
               <option disabled selected>
                 all
               </option>
-              <option>Tables</option>
-              <option>Chairs</option>
-              <option>Kids</option>
-              <option>Sofas</option>
-              <option>Beds</option>
+              <option value="tables">Tables</option>
+              <option value="chairs">Chairs</option>
+              <option value="chairs">Kids</option>
+              <option value="chairs">Sofas</option>
+              <option value="beds">Beds</option>
             </select>
           </div>
           <div className="field flex flex-col gap-1 w-1/4">
             <label className="cursor-pointer">Select Company</label>
-            <select className="select select-bordered w-full max-w-xs select-sm">
+            <select className="select select-bordered w-full max-w-xs select-sm" >
               <option disabled selected>
                 all
               </option>
-              <option>Modenza</option>
-              <option>Luxora</option>
-              <option>Artifex</option>
-              <option>Comfora</option>
-              <option>Hommestead</option>
+              <option value="modenza">Modenza</option>
+              <option value="luxora">Luxora</option>
+              <option value="artifex">Artifex</option>
+              <option value="comfora">Comfora</option>
+              <option value="hommestead">Hommestead</option>
             </select>
           </div>
           <div className="field flex flex-col gap-1 w-1/4">
@@ -80,9 +101,9 @@ function Products() {
               <option disabled selected>
                 a-z
               </option>
-              <option>z-a</option>
-              <option>high</option>
-              <option>low</option>
+              <option value="">z-a</option>
+              <option value="">high</option>
+              <option value="">low</option>
             </select>
           </div>
         </div>
@@ -109,25 +130,27 @@ function Products() {
             </div>
           </div>
           <div className="buttons w-2/4 flex justify-between gap-3">
-          <button className="btn btn-primary w-2/4" onClick={hanldecl}>SEARCH</button>
-            <button className="btn btn-secondary w-2/4">RESET</button> 
+            <button className="btn btn-primary w-2/4" onClick={hanldeClick}>
+              SEARCH
+            </button>
+            <button className="btn btn-secondary w-2/4">RESET</button>
           </div>
         </div>
       </div>
-      <h2 className=' mt-12 font-medium text-md mb-5'>{featured.length} products</h2>
-        <hr className="mb-16 "/>
+      <h2 className=" mt-12 font-medium text-md mb-5">
+        {featured.length} products
+      </h2>
+      <hr className="mb-16 " />
       <div className="featured-wrapper flex flex-wrap justify-between mt-4 gap-4 mb-20">
-        
-          {
-            loading && <span className="loading loading-ring loading-lg block mx-auto mt-20"></span>
-          }
-          {
-            !loading && featured.length > 0 && featured.map((el, index) => {
-              return (<Card key={index} data = {el}></Card>);
-            })
-          }
-        
-        </div>
+        {loading && (
+          <span className="loading loading-ring loading-lg block mx-auto mt-20"></span>
+        )}
+        {!loading &&
+          featured.length > 0 &&
+          featured.map((el, index) => {
+            return <Card key={index} data={el}></Card>;
+          })}
+      </div>
     </div>
   );
 }
